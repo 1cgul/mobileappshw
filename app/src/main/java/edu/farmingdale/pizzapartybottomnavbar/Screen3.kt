@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,36 +27,62 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// ToDo 2: the slider should be able to change the text value of the screen
 
-// ToDo 3: Make the UI look better by adding a gradient background (vertical) and padding
+
 
 @Composable
 fun Screen3() {
     var sliderValue by remember { mutableStateOf(0.5f) }
     var chkd by remember { mutableStateOf(true) }
 
-
     val context = LocalContext.current
-    Column ( modifier = Modifier.padding(horizontal = 20.dp).fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally){
-        Slider(value = sliderValue, onValueChange = { sliderValue=it }, Modifier.fillMaxWidth()
-            , enabled = chkd)
 
-        Text (fontSize = 20.sp, text = "Second Screen" )
+    // Define the vertical gradient colors
+    val gradientColors = listOf(Color(0xFF42A5F5), Color.White) //gradient colors
 
-        Button(onClick = { val newInt = Intent(Intent.ACTION_VIEW)
-            newInt.setData(Uri.parse("tel:6314202000"))
-            context.startActivity(newInt) }) {
-            Text(fontSize = 20.sp, text ="Call me")
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient( // gradient
+                    colors = gradientColors,
+                    startY = 0f, // gradient starts from the top
+                    endY = Float.POSITIVE_INFINITY // gradient ends at the bottom
+                )
+            )
+            .padding(20.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Slider(
+                value = sliderValue,
+                onValueChange = { sliderValue = it },
+                Modifier.fillMaxWidth(),
+                enabled = chkd
+            )
+
+            Text(
+                fontSize = 20.sp,
+                text = String.format("%.4f", sliderValue), //text shows slider value rounded to 4 decimal places
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+
+            Button(onClick = {
+                val newInt = Intent(Intent.ACTION_VIEW)
+                newInt.setData(Uri.parse("tel:6314202000"))
+                context.startActivity(newInt)
+            }) {
+                Text(fontSize = 20.sp, text = "Call me")
+            }
+
+            Checkbox(
+                checked = chkd,
+                onCheckedChange = { chkd = it },
+                modifier = Modifier.padding(10.dp)
+            )
         }
-
-        Checkbox(checked = chkd, onCheckedChange = { chkd=it }, modifier = Modifier.padding(10.dp))
-
     }
-
 }
-
-
-
